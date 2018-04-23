@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -11,17 +12,8 @@ namespace Advanced_Portfolio
     {
         static void Main(string[] args)
         {
-            
-            string section = "";
-            string head = $"Multiple Choise Exam{section}";
-            string line = "\n";
-
-            for (int i = 0; i < head.Length; i++)
-            {
-                line += "-";
-            }
-            
-            Console.WriteLine(head+line);
+            Start:
+            Methods.MakeHead();
             Console.WriteLine("Please enter:\n" +
                               "\t1 - to create a new question,\n" +
                               "\t2 - to display all questions,\n" +
@@ -32,37 +24,49 @@ namespace Advanced_Portfolio
                               "\t7 - to start the exam,\n" +
                               "\t8 - to mark the exam,\n" +
                               "\t0 - to exit the program.\n");
-            Start:
+
             var a = Console.ReadKey(true);
             switch (a.KeyChar)
             {
                 case '1':
-                    break;
+                    Console.Clear();
+                    Methods.CreateNewQuestion();
+                    goto Start;
                 case '2':
-                    break;
+                    Console.Clear();
+                    Methods.DisplayAllQuestions();
+                    goto Start;
                 case '3':
-                    break;
+                    Console.Clear();
+                    Methods.EditQuestion();
+                    goto Start;
                 case '4':
-                    break;
+                    Console.Clear();
+                    Methods.DeleteQuestion();
+                    goto Start;
                 case '5':
-                    break;
+                    Console.Clear();
+                    Methods.ImportQuestions();
+                    goto Start;
                 case '6':
-                    break;
+                    Console.Clear();                    
+                    Methods.ExportQuestions();
+                    goto Start;
                 case '7':
-                    break;
+                    Console.Clear();
+                    Methods.StartExam();
+                    goto Start;
                 case '8':
-                    break;
+                    Console.Clear();
+                    Methods.MakeHead("Mark Exam");
+                    Methods.MarkExam();
+                    goto Start;
                 case '0':
                     break;
                 default:
-                    Console.WriteLine("Write a number");
+                    Console.Clear();
                     goto Start;
-                    break;
-
-
             }
-            
-            Console.ReadKey();
         }
     }
 }
