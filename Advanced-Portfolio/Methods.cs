@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Advanced_Portfolio
 {
+    //class that contains all method for program
     public static class Methods
     {
         //functions that make head of application
@@ -32,9 +33,8 @@ namespace Advanced_Portfolio
         //list that contains 30 questions 
         public static List<MultipleChoiceQuestion> Questions = new List<MultipleChoiceQuestion>(30);
         
-
         //list that contains user answers from StartExam()
-        public static List<string> Answers = new List<string>();
+        public static List<CorrectChoise> Answers = new List<CorrectChoise>();
 
         //create new question
         public static void CreateNewQuestion()
@@ -233,26 +233,30 @@ namespace Advanced_Portfolio
                 {
                     //clear questions list
                     Questions.Clear();
-                    //read all text and put it into 
-                    string allText = sr.ReadToEnd();
-                    string[] fullQuestions = allText.Split('-');
 
+                    //read all text
+                    string allText = sr.ReadToEnd();
+
+                    //split text into questions
+                    string[] fullQuestions = allText.Split('-');
+                    
+                    //for each question from file
                     foreach (string fullQuestion in fullQuestions)
                     {
-                        if (fullQuestion != "")
-                        {
-                            string[] q = fullQuestion.Trim().Split('\n');
+                        //getting rid of useless white space characters and cutting-off each string
+                        string[] q = fullQuestion.Trim().Split('\n');
+                        
+                        //the first string is the question
+                        string question = q[0].Substring(3);//Substring to cut-off letter and space (A. , B. , etc.)
+                        string choise1 = q[1].Substring(3); 
+                        string choise2 = q[2].Substring(3);
+                        string choise3 = q[3].Substring(3);
+                        string choise4 = q[4].Substring(3);
+                        CorrectChoise.TryParse(q[5], true, out CorrectChoise cc);//don't forget to enter correct choise into file :)
 
-                            string question = q[0];
-                            string choise1 = q[1].Substring(3);//Substring to cut-off letter and space (A. , B. , etc.)
-                            string choise2 = q[2].Substring(3);
-                            string choise3 = q[3].Substring(3);
-                            string choise4 = q[4].Substring(3);
-                            CorrectChoise.TryParse(q[5], true, out CorrectChoise cc);
-
-                            var newQuestion = new MultipleChoiceQuestion(question, choise1, choise2, choise3, choise4, cc);
-                            Questions.Add(newQuestion);
-                        }
+                        //putting all question data into the new question and adding it into the list
+                        var newQuestion = new MultipleChoiceQuestion(question, choise1, choise2, choise3, choise4, cc);
+                        Questions.Add(newQuestion);
                     }
                 }
             }
@@ -283,17 +287,17 @@ namespace Advanced_Portfolio
                         //if not last question
                         if (q != Questions[Questions.Count - 1])
                         {
-                            sw.WriteLine($"{q.Question}" +
+                            sw.WriteLine($"{q.Question}\r\n" +
                                          $"A. {q.Choise1}\r\n" +
                                          $"B. {q.Choise2}\r\n" +
                                          $"C. {q.Choise3}\r\n" +
                                          $"D. {q.Choise4}\r\n" +
-                                         "---");
+                                         "-");
                         }
                         //if last question
                         else
                         {
-                            sw.WriteLine($"{q.Question}" +
+                            sw.WriteLine($"{q.Question}\r\n" +
                                          $"A. {q.Choise1}\r\n" +
                                          $"B. {q.Choise2}\r\n" +
                                          $"C. {q.Choise3}\r\n" +
@@ -319,9 +323,11 @@ namespace Advanced_Portfolio
         {
             //delete all answers from Answers list from previous try
             Answers.Clear();
-            int i = 1;
+            //number of the question
+            int i = 0;
             foreach (var question in Questions)
             {
+                i++;
                 Console.WriteLine($"Question {i}\n" +
                                   "-----------------\n" +
                                   $"{question.Question}\n" +
@@ -331,72 +337,47 @@ namespace Advanced_Portfolio
                                   $"D. {question.Choise4}\n");
 
                 Console.WriteLine("Your answer (A,B,C,D)");
-                string a = Console.ReadLine();
-                if (a == "A" || a == "B" || a == "C" || a == "D")
+                //check if the input is in correct form
+                Input:
+                if (!CorrectChoise.TryParse(Console.ReadLine(), true, out CorrectChoise cc))
                 {
-                    Answers.Add(a);
-                }
-                else
-                {
+                    //if input not in correct form
                     Console.WriteLine("Write A, B, C or D");
+                    goto Input;
                 }
-                i++;
+                
+                //adding user's answer to Answers list
+                Answers.Add(cc);
                 Console.Clear();
             }
         }
 
+        //mark exam
         public static void MarkExam()
         {
+            MakeHead("Mark Exam");
+
+            //variable that counts the number of right answers
             int right = 0;
+
+            //string that contains wring answers' numbers
             string wrongAnswers = "";
 
+            //iterate through Questions list to compare CorrectChoise to users answer for each question
             for (int i = 0; i < Questions.Count; i++)
             {
-                switch (Answers[i])
+                if (Questions[i].CorrectChoise == Answers[i])
                 {
-                    case "A":
-                        if (Questions[i].CorrectChoise == CorrectChoise.A)
-                        {
-                            right++;
-                        }
-                        else
-                        {
-                            wrongAnswers += i + " ";
-                        }
-                        break;
-                    case "B":
-                        if (Questions[i].CorrectChoise == CorrectChoise.B)
-                        {
-                            right++;
-                        }
-                        else
-                        {
-                            wrongAnswers += i + " ";
-                        }
-                        break;
-                    case "C":
-                        if (Questions[i].CorrectChoise == CorrectChoise.C)
-                        {
-                            right++;
-                        }
-                        else
-                        {
-                            wrongAnswers += i + " ";
-                        }
-                        break;
-                    case "D":
-                        if (Questions[i].CorrectChoise == CorrectChoise.D)
-                        {
-                            right++;
-                        }
-                        else
-                        {
-                            wrongAnswers += i + " ";
-                        }
-                        break;
+                    //incrementing right answers counter
+                    right++;
+                }
+                else
+                {
+                    //adding the number of the wrong answer to the string
+                    wrongAnswers += i + " ";
                 }
             }
-
+            //calculation of right answers percent
             float percent = right / Questions.Count * 100;
 
             Console.WriteLine($"You got {percent} %. You got {right} questions correct out of {Questions.Count}.");

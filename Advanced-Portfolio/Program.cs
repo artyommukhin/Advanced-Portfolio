@@ -24,9 +24,9 @@ namespace Advanced_Portfolio
                               "\t7 - to start the exam,\n" +
                               "\t8 - to mark the exam,\n" +
                               "\t0 - to exit the program.\n");
-
-            var a = Console.ReadKey(true);
-            switch (a.KeyChar)
+            
+            //read user's input
+            switch (Console.ReadKey(true).KeyChar)
             {
                 case '1':
                     Console.Clear();
@@ -58,7 +58,6 @@ namespace Advanced_Portfolio
                     goto Start;
                 case '8':
                     Console.Clear();
-                    Methods.MakeHead("Mark Exam");
                     Methods.MarkExam();
                     goto Start;
                 case '0':
