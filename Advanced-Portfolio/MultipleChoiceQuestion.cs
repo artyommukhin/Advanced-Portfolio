@@ -22,5 +22,15 @@ namespace Advanced_Portfolio
 
         public CorrectChoise CorrectChoise { get; set; }
 
+        public MultipleChoiceQuestion(string q, string c1, string c2, string c3, string c4, CorrectChoise cc)
+        {
+            Question = q;
+            Choise1 = c1;
+            Choise2 = c2;
+            Choise3 = c3;
+            Choise4 = c4;
+            CorrectChoise = cc;
+        }
+
     }
 }
