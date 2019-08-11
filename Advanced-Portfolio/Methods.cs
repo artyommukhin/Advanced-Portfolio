@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Advanced_Portfolio
 {
-    //class that contains all method for program
+    //class that contains all methods for program
     public static class Methods
     {
         //functions that make head of application
